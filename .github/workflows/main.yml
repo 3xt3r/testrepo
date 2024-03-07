@@ -1,6 +1,10 @@
-name: Flake8 Check
+name: Flake8 Check and Deploy
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   flake8-check:
@@ -23,3 +27,17 @@ jobs:
     - name: Run flake8
       run: |
         flake8 .
+
+  # Собрать и отправить образ приложения на DockerHub
+  build:
+    runs-on: ubuntu-latest
+    needs: flake8-check
+    steps:
+    - name: Build Docker image
+      run: docker build -t urrroboro/testrepo:latest .
+    
+    - name: Log in to DockerHub
+      run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+    
+    - name: Push Docker image to DockerHub
+      run: docker push urrroboro/testrepo:latest
