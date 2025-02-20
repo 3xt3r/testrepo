@@ -5,19 +5,18 @@
 Комментарий: Эта строка покрыта
 
 ```diff
-- 293:             using (var targetBuffer = _reusableEncodingBuffer.Allocate())
-            using (var targetBuilder = ReusableLayoutBuilder.Allocate())
-            {
-                int targetBufferPosition = 0;
-                try
-                {
-                    for (int i = 0; i < logEvents.Count; ++i)
-                    {
-                        targetBuilder.Result.ClearBuilder();
-                        RenderLogEventToWriteBuffer(output, Layout, logEvents[i].LogEvent, targetBuilder.Result, targetBuffer.Result, ref targetBufferPosition);
-                        logEvents[i].Continuation(null);
-                    }
-                }
+-287             using (var targetBuffer = _reusableEncodingBuffer.Allocate())
+-288             using (var targetBuilder = ReusableLayoutBuilder.Allocate())
+-289             {
+-290                 int targetBufferPosition = 0;
+-291                 try
+-292                 {
+-294                     {
+-295                         targetBuilder.Result.ClearBuilder();
+-296                         RenderLogEventToWriteBuffer(output, Layout, logEvents[i].LogEvent, targetBuilder.Result, targetBuffer.Result, ref targetBufferPosition);
+-297                         logEvents[i].Continuation(null);
+-298                     }
+-299                 }
 ```
 
 ---
@@ -25,19 +24,18 @@
 Комментарий: Эта строка покрыта
 
 ```diff
-- 282:                 RenderLogEventToWriteBuffer(output, layout, logEvent, targetBuilder.Result, targetBuffer.Result, ref targetBufferPosition);
-                if (targetBufferPosition > 0)
-                {
-                    WriteBufferToOutput(output, targetBuffer.Result, targetBufferPosition);
-                }
-            }
-        }
-
-        private void WriteBufferToOutput(IList<AsyncLogEventInfo> logEvents)
-        {
-            var output = GetOutput();
-            using (var targetBuffer = _reusableEncodingBuffer.Allocate())
-            using (var targetBuilder = ReusableLayoutBuilder.Allocate())
+-276                 RenderLogEventToWriteBuffer(output, layout, logEvent, targetBuilder.Result, targetBuffer.Result, ref targetBufferPosition);
+-277                 if (targetBufferPosition > 0)
+-278                 {
+-279                     WriteBufferToOutput(output, targetBuffer.Result, targetBufferPosition);
+-280                 }
+-281             }
+-283 
+-284         private void WriteBufferToOutput(IList<AsyncLogEventInfo> logEvents)
+-285         {
+-286             var output = GetOutput();
+-287             using (var targetBuffer = _reusableEncodingBuffer.Allocate())
+-288             using (var targetBuilder = ReusableLayoutBuilder.Allocate())
 ```
 
 ---
@@ -45,19 +43,17 @@
 Комментарий: Эта строка покрыта
 
 ```diff
-- 281:             {
-                RenderLogEventToWriteBuffer(output, layout, logEvent, targetBuilder.Result, targetBuffer.Result, ref targetBufferPosition);
-                if (targetBufferPosition > 0)
-                {
-                    WriteBufferToOutput(output, targetBuffer.Result, targetBufferPosition);
-                }
-            }
-        }
-
-        private void WriteBufferToOutput(IList<AsyncLogEventInfo> logEvents)
-        {
-            var output = GetOutput();
-            using (var targetBuffer = _reusableEncodingBuffer.Allocate())
+-275             {
+-276                 RenderLogEventToWriteBuffer(output, layout, logEvent, targetBuilder.Result, targetBuffer.Result, ref targetBufferPosition);
+-277                 if (targetBufferPosition > 0)
+-278                 {
+-279                     WriteBufferToOutput(output, targetBuffer.Result, targetBufferPosition);
+-280                 }
+-283 
+-284         private void WriteBufferToOutput(IList<AsyncLogEventInfo> logEvents)
+-285         {
+-286             var output = GetOutput();
+-287             using (var targetBuffer = _reusableEncodingBuffer.Allocate())
 ```
 
 ---
