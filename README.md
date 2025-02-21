@@ -4,7 +4,7 @@
 ### Непокрытая строка: 293
 Комментарий: Эта строка покрыта
 
-```diff
+```diff 
 -287             using (var targetBuffer = _reusableEncodingBuffer.Allocate())
 -288             using (var targetBuilder = ReusableLayoutBuilder.Allocate())
  289             {
