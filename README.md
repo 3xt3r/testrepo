@@ -28,7 +28,7 @@
 70      :      :rtype: requests.Response
 71      :      """
 72      :  
--73      :      return request("get", url, params=params, **kwargs)
+-73     :      return request("get", url, params=params, **kwargs)
 ```
 
 ```diff
@@ -41,7 +41,7 @@
 82      :      :rtype: requests.Response
 83      :      """
 84      :  
--85      :      return request("options", url, **kwargs)
+-85     :      return request("options", url, **kwargs)
 ```
 
 ```diff
@@ -56,8 +56,8 @@
 96      :      :rtype: requests.Response
 97      :      """
 98      :  
--99      :      kwargs.setdefault("allow_redirects", False)
--100     :      return request("head", url, **kwargs)
+-99     :      kwargs.setdefault("allow_redirects", False)
+-100    :      return request("head", url, **kwargs)
 ```
 
 ```diff
@@ -73,7 +73,7 @@
 112     :      :rtype: requests.Response
 113     :      """
 114     :  
--115     :      return request("post", url, data=data, json=json, **kwargs)
+-115    :      return request("post", url, data=data, json=json, **kwargs)
 ```
 
 ```diff
@@ -89,7 +89,7 @@
 127     :      :rtype: requests.Response
 128     :      """
 129     :  
--130     :      return request("put", url, data=data, **kwargs)
+-130    :      return request("put", url, data=data, **kwargs)
 ```
 
 ```diff
@@ -105,7 +105,7 @@
 142     :      :rtype: requests.Response
 143     :      """
 144     :  
--145     :      return request("patch", url, data=data, **kwargs)
+-145    :      return request("patch", url, data=data, **kwargs)
 ```
 
 ```diff
@@ -118,9 +118,9 @@
 154     :      :rtype: requests.Response
 155     :      """
 156     :  
--157     :      return request("delete", url, **kwargs)
+-157    :      return request("delete", url, **kwargs)
 ```
-Комментарий: в данном модуле отсутствует покрытие для результатов возврата всех функций, которые в нем определены, кроме функции request.
+В данном модуле отсутствует покрытие для результатов возврата всех функций, которые в нем определены, кроме функции request.
 Функции get, post, put, delete, head, options и patch из модуля requests.api являются обёртками вокруг основной функции request, фаззинг которой происходит в фаззинг-скрипте fuzz_requests.py. Поскольку в нем происходит вызов requests.request() с различными методами и параметрами, вышеперечисленные функции не вызываются в коде напрямую. Поскольку методы являются обертками над request, и их отличие между собой только в строковом значении указываемого HTTP-метода, отдельный фаззинг не требуется.
 
 ### Файл requests/sessions.py
@@ -136,7 +136,7 @@
 
 ```diff
 470     :          if not isinstance(cookies, cookielib.CookieJar):
--471     :              cookies = cookiejar_from_dict(cookies)
+-471    :              cookies = cookiejar_from_dict(cookies)
 472     :  
 473     :          # Merge with session cookies
 474     :          merged_cookies = merge_cookies(
@@ -146,7 +146,7 @@
 478     :          # Set environment's basic authentication if not explicitly set.
 479     :          auth = request.auth
 480     :          if self.trust_env and not auth and not self.auth:
--481     :              auth = get_netrc_auth(request.url)
+-481    :              auth = get_netrc_auth(request.url)
 482     :  
 483     :          p = PreparedRequest()
 484     :          p.prepare(
@@ -165,8 +165,7 @@
 497     :          )
 498     :          return p
 ```
-Комментарий: не покрывается строка 471, 
-Также не покрывается строка 481, относящаяся к логике аутентификации. Функция пытается получить логин и пароль из файла .netrc. Если для request.url найдена запись, возвращается (username, password). Если файл .netrc отсутствует или нет записи для url, возвращает None. 
+Не покрывается строка 471, также не покрывается строка 481, относящаяся к логике аутентификации. Функция пытается получить логин и пароль из файла .netrc. Если для request.url найдена запись, возвращается (username, password). Если файл .netrc отсутствует или нет записи для url, возвращает None. 
 В функционале основного ПО, в котором используется модуль requests, отсутствует обращение к модулю аутентификации, следовательно покрытие данного кода на текущий момент не требуется. 
 
 
@@ -178,16 +177,16 @@
 759     :              no_proxy = proxies.get("no_proxy") if proxies is not None else None
 760     :              env_proxies = get_environ_proxies(url, no_proxy=no_proxy)
 761     :              for k, v in env_proxies.items():
--762     :                  proxies.setdefault(k, v)
+-762    :                  proxies.setdefault(k, v)
 763     :  
 ```
-Комментарий: в функции merge_environment_settings не покрывается строка 762, которая участвует в установке прокси-серверов на основе настроек системы. Это часть прокси-режима в requests, который позволяет автоматически применять системные прокси или прокси, указанные пользователем. В функционале основного ПО, в котором используется модуль requests, данная настройка не участвует. 
+В функции merge_environment_settings не покрывается строка 762, которая участвует в установке прокси-серверов на основе настроек системы. Это часть прокси-режима в requests, который позволяет автоматически применять системные прокси или прокси, указанные пользователем. В функционале основного ПО, в котором используется модуль requests, данная настройка не участвует. 
 
 ### requests.sessions.Session.send
 
 ```diff
 688     :          if isinstance(request, Request):
--689     :              raise ValueError("You can only send PreparedRequests.")
+-689    :              raise ValueError("You can only send PreparedRequests.")
 690     :  
 691     :          # Set up variables needed for resolve_redirects and dispatching of hooks
 692     :          allow_redirects = kwargs.pop("allow_redirects", True)
@@ -213,8 +212,8 @@
 712     :          # Persist cookies
 713     :          if r.history:
 714     :              # If the hooks create history then we want those cookies too
--715     :              for resp in r.history:
--716     :                  extract_cookies_to_jar(self.cookies, resp.request, resp.raw)
+-715    :              for resp in r.history:
+-716    :                  extract_cookies_to_jar(self.cookies, resp.request, resp.raw)
 717     :  
 718     :          extract_cookies_to_jar(self.cookies, request, r.raw)
 719     :  
@@ -229,12 +228,12 @@
 728     :          # Shuffle things around if there's history.
 729     :          if history:
 730     :              # Insert the first (original) request at the start
--731     :              history.insert(0, r)
+-731    :              history.insert(0, r)
 732     :              # Get the last request made
--733     :              r = history.pop()
--734     :              r.history = history
+-733    :              r = history.pop()
+-734    :              r.history = history
 ```
-Комментарий: код на стр. 689 является обработкой исключения ValueError, не требуется фаззить. Код на стр. 715-716 относится к обработке редиректов, механизм перенаправления не используется в функционале основного ПО, в котором используется модуль requests.
+Код на стр. 689 является обработкой исключения ValueError, не требуется фаззить. Код на стр. 715-716 относится к обработке редиректов, механизм перенаправления не используется в функционале основного ПО, в котором используется модуль requests.
 Код на стр. 731-734 также относится к обработке редиректов. 
 
 ### Файл requests/models.py
@@ -255,9 +254,9 @@
 290     :          self.cookies = cookies
 291     :  
 292     :      def __repr__(self):
--293     :          return f"<Request [{self.method}]>"
+-293    :          return f"<Request [{self.method}]>"
 ```
-Комментарий: в стр. 280 код выполняет регистрацию пользовательских хуков (hooks) в объекте запроса. Пользовательские хуки не используются в функционале основного ПО, в котором используется модуль requests.
+В стр. 280 код выполняет регистрацию пользовательских хуков (hooks) в объекте запроса. Пользовательские хуки не используются в функционале основного ПО, в котором используется модуль requests.
 В стр. 293 метод __repr__ определяет текстовое представление объекта и используется в Python для отладки и логирования, которые не используются в функционале основного ПО, в котором используется модуль requests. 
 
 ### Файл requests/auth.py      
@@ -273,7 +272,7 @@
 81      :          self.password = password
 82      :  
 83      :      def __eq__(self, other):
--84      :          return all(
+-84     :          return all(
 85      :              [
 86      :                  self.username == getattr(other, "username", None),
 87      :                  self.password == getattr(other, "password", None),
@@ -281,13 +280,13 @@
 89      :          )
 90      :  
 91      :      def __ne__(self, other):
--92      :          return not self == other
+-92     :          return not self == other
 93      :  
 94      :      def __call__(self, r):
 95      :          r.headers["Authorization"] = _basic_auth_str(self.username, self.password)
 96      :          return r
 ```
-Комментарий: метод __eq__ отвечает за проверку равенства двух объектов. В данном случае метод определяет, равны ли два объекта, сравнивая атрибуты username и password. Метод __eq__ не покрывается фаззингом, потому что не проверяются сценарии, где вызывается оператор == между двумя объектами. Поскольку метод реализует простое сравнение двух строк, фаззинг здесь не требуется.
+Метод __eq__ отвечает за проверку равенства двух объектов. В данном случае метод определяет, равны ли два объекта, сравнивая атрибуты username и password. Метод __eq__ не покрывается фаззингом, потому что не проверяются сценарии, где вызывается оператор == между двумя объектами. Поскольку метод реализует простое сравнение двух строк, фаззинг здесь не требуется.
 Метод __ne__ отвечает за проверку неравенства объектов (вызывается, когда используется оператор !=). Метод __ne__ не покрывается фаззингом из-за отсутствия проверок с использованием оператора !=. Поскольку метод реализует простое сравнение двух строк, фаззинг здесь не требуется.
 
 ### requests.auth._basic_auth_str
@@ -304,26 +303,26 @@
 33      :      # These are here solely to maintain backwards compatibility
 34      :      # for things like ints. This will be removed in 3.0.0.
 35      :      if not isinstance(username, basestring):
--36      :          warnings.warn(
+-36     :          warnings.warn(
 37      :              "Non-string usernames will no longer be supported in Requests "
 38      :              "3.0.0. Please convert the object you've passed in ({!r}) to "
 39      :              "a string or bytes object in the near future to avoid "
 40      :              "problems.".format(username),
 41      :              category=DeprecationWarning,
 42      :          )
--43      :          username = str(username)
+-43     :          username = str(username)
 44      :  
 45      :      if not isinstance(password, basestring):
--46      :          warnings.warn(
+-46     :          warnings.warn(
 47      :              "Non-string passwords will no longer be supported in Requests "
 48      :              "3.0.0. Please convert the object you've passed in ({!r}) to "
 49      :              "a string or bytes object in the near future to avoid "
 50      :              "problems.".format(type(password)),
 51      :              category=DeprecationWarning,
 52      :          )
--53      :          password = str(password)
+-53     :          password = str(password)
 54      :      # -- End Removal --
 55      :  
 56      :      if isinstance(username, str):
 ```
-Комментарий: в данном случае код не покрывается в стр. 36, 43, 46, 53, так как warnings.warn() в этом коде используется для обработки некорректных данных для username и password, которые и так генерируются фаззером. 
+В данном случае код не покрывается в стр. 36, 43, 46, 53, так как warnings.warn() в этом коде используется для обработки некорректных данных для username и password, которые и так генерируются фаззером. 
