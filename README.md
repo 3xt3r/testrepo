@@ -1,78 +1,272 @@
-# Анализ покрытия кода
+# Анализ результатов, полученных при фаззинг-тестировании requests
 
-## Файл: src/NLog/Targets/ConsoleTarget.cs
-### Непокрытая строка: 281
-Комментарий: Эта строка покрыта
+## Анализ выявленных падений
 
+На текущий момент при фаззинг-тестировании падений получено не было. 
+
+## Анализ доcтигнутого покрытия
+
+  - Целевая библиотека для фаззинг тестирования - [requests](https://github.com/psf/requests)
+  - Целевой метод - requests.api.request
+  - Целевой класс - HTTPBasicAuth
+  - Фаззинг-скрипт, использованный при фаззинг-тестировании: fuzz_requests.py
+
+
+### Целевой исходный код, непокрытый при фаззинг-тестировании
+
+### Файл requests/api.py
+
+Непокрытый код: стр. 73
 ```diff
- 275             {
--276                 RenderLogEventToWriteBuffer(output, layout, logEvent, targetBuilder.Result, targetBuffer.Result, ref targetBufferPosition);
--277                 if (targetBufferPosition > 0)
- 278                 {
--279                     WriteBufferToOutput(output, targetBuffer.Result, targetBufferPosition);
- 280                 }
--281             }
--282         }
- 283 
- 284         private void WriteBufferToOutput(IList<AsyncLogEventInfo> logEvents)
- 285         {
--286             var output = GetOutput();
--287             using (var targetBuffer = _reusableEncodingBuffer.Allocate())
+62    0 :  def get(url, params=None, **kwargs):
+63      :      r"""Sends a GET request.
+64      :  
+65      :      :param url: URL for the new :class:`Request` object.
+66      :      :param params: (optional) Dictionary, list of tuples or bytes to send
+67      :          in the query string for the :class:`Request`.
+68      :      :param \*\*kwargs: Optional arguments that ``request`` takes.
+69      :      :return: :class:`Response <Response>` object
+70      :      :rtype: requests.Response
+71      :      """
+72      :  
+-73      :      return request("get", url, params=params, **kwargs)
 ```
 
----
-### Непокрытая строка: 282
-Комментарий: Эта строка покрыта
-
+Непокрытый код: стр. 85
 ```diff
--276                 RenderLogEventToWriteBuffer(output, layout, logEvent, targetBuilder.Result, targetBuffer.Result, ref targetBufferPosition);
--277                 if (targetBufferPosition > 0)
- 278                 {
--279                     WriteBufferToOutput(output, targetBuffer.Result, targetBufferPosition);
- 280                 }
--281             }
--282         }
- 283 
- 284         private void WriteBufferToOutput(IList<AsyncLogEventInfo> logEvents)
- 285         {
--286             var output = GetOutput();
--287             using (var targetBuffer = _reusableEncodingBuffer.Allocate())
--288             using (var targetBuilder = ReusableLayoutBuilder.Allocate())
+76    0 :  def options(url, **kwargs):
+77      :      r"""Sends an OPTIONS request.
+78      :  
+79      :      :param url: URL for the new :class:`Request` object.
+80      :      :param \*\*kwargs: Optional arguments that ``request`` takes.
+81      :      :return: :class:`Response <Response>` object
+82      :      :rtype: requests.Response
+83      :      """
+84      :  
+-85      :      return request("options", url, **kwargs)
 ```
 
----
-### Непокрытая строка: 293
-Комментарий: Эта строка покрыта
-
+Непокрытый код: стр. 99-100
 ```diff
--287             using (var targetBuffer = _reusableEncodingBuffer.Allocate())
--288             using (var targetBuilder = ReusableLayoutBuilder.Allocate())
- 289             {
--290                 int targetBufferPosition = 0;
- 291                 try
- 292                 {
--293                     for (int i = 0; i < logEvents.Count; ++i)
- 294                     {
--295                         targetBuilder.Result.ClearBuilder();
--296                         RenderLogEventToWriteBuffer(output, Layout, logEvents[i].LogEvent, targetBuilder.Result, targetBuffer.Result, ref targetBufferPosition);
--297                         logEvents[i].Continuation(null);
- 298                     }
--299                 }
+88    0 :  def head(url, **kwargs):
+89      :      r"""Sends a HEAD request.
+90      :  
+91      :      :param url: URL for the new :class:`Request` object.
+92      :      :param \*\*kwargs: Optional arguments that ``request`` takes. If
+93      :          `allow_redirects` is not provided, it will be set to `False` (as
+94      :          opposed to the default :meth:`request` behavior).
+95      :      :return: :class:`Response <Response>` object
+96      :      :rtype: requests.Response
+97      :      """
+98      :  
+-99      :      kwargs.setdefault("allow_redirects", False)
+-100     :      return request("head", url, **kwargs)
 ```
 
----
-## Файл: src/NLog/Targets/NetworkLogEventDroppedEventArgs.cs
-### Непокрытая строка: 1
-Комментарий: Эта строка покрыта
-
+Непокрытый код: стр. 115
 ```diff
- 1 // 
- 2 // Copyright (c) 2004-2021 Jaroslaw Kowalski <jaak@jkowalski.net>, Kim Christensen, Julian Verdurmen
- 3 // 
- 4 // All rights reserved.
- 5 // 
- 6 // Redistribution and use in source and binary forms, with or without 
- 7 // modification, are permitted provided that the following conditions 
+103   0 :  def post(url, data=None, json=None, **kwargs):
+104     :      r"""Sends a POST request.
+105     :  
+106     :      :param url: URL for the new :class:`Request` object.
+107     :      :param data: (optional) Dictionary, list of tuples, bytes, or file-like
+108     :          object to send in the body of the :class:`Request`.
+109     :      :param json: (optional) A JSON serializable Python object to send in the body of the :class:`Request`.
+110     :      :param \*\*kwargs: Optional arguments that ``request`` takes.
+111     :      :return: :class:`Response <Response>` object
+112     :      :rtype: requests.Response
+113     :      """
+114     :  
+-115     :      return request("post", url, data=data, json=json, **kwargs)
 ```
 
----
+Непокрытый код: стр. 130
+```diff
+118   0 :  def put(url, data=None, **kwargs):
+119     :      r"""Sends a PUT request.
+120     :  
+121     :      :param url: URL for the new :class:`Request` object.
+122     :      :param data: (optional) Dictionary, list of tuples, bytes, or file-like
+123     :          object to send in the body of the :class:`Request`.
+124     :      :param json: (optional) A JSON serializable Python object to send in the body of the :class:`Request`.
+125     :      :param \*\*kwargs: Optional arguments that ``request`` takes.
+126     :      :return: :class:`Response <Response>` object
+127     :      :rtype: requests.Response
+128     :      """
+129     :  
+-130     :      return request("put", url, data=data, **kwargs)
+```
+
+Непокрытый код: стр. 145
+```diff
+133   0 :  def patch(url, data=None, **kwargs):
+134     :      r"""Sends a PATCH request.
+135     :  
+136     :      :param url: URL for the new :class:`Request` object.
+137     :      :param data: (optional) Dictionary, list of tuples, bytes, or file-like
+138     :          object to send in the body of the :class:`Request`.
+139     :      :param json: (optional) A JSON serializable Python object to send in the body of the :class:`Request`.
+140     :      :param \*\*kwargs: Optional arguments that ``request`` takes.
+141     :      :return: :class:`Response <Response>` object
+142     :      :rtype: requests.Response
+143     :      """
+144     :  
+-145     :      return request("patch", url, data=data, **kwargs)
+```
+
+Непокрытый код: стр. 157
+```diff
+148   0 :  def delete(url, **kwargs):
+149     :      r"""Sends a DELETE request.
+150     :  
+151     :      :param url: URL for the new :class:`Request` object.
+152     :      :param \*\*kwargs: Optional arguments that ``request`` takes.
+153     :      :return: :class:`Response <Response>` object
+154     :      :rtype: requests.Response
+155     :      """
+156     :  
+-157     :      return request("delete", url, **kwargs)
+```
+Комментарий: в данном модуле отсутствует покрытие для результатов возврата всех функций, которые в нем определены, кроме функции request.
+Функции get, post, put, delete, head, options и patch из модуля requests.api являются обёртками вокруг основной функции request, фаззинг которой происходит в фаззинг-скрипте fuzz_requests.py. Поскольку в нем происходит вызов requests.request() с различными методами и параметрами, вышеперечисленные функции не вызываются в коде напрямую. Поскольку методы являются обертками над request, и их отличие между собой только в строковом значении указываемого HTTP-метода, отдельный фаззинг не требуется.
+
+### Файл requests/sessions.py
+
+Целевой метод requests.api.request является оберткой над функцией requests.sessions.Session.request, которая покрывается вся. 
+Далее функция requests.sessions.Session.request вызывает следующие функции, которые потенциально попадают на поверхность атаки:
+requests.models.Request
+requests.sessions.Session.prepare_request
+requests.sessions.Session.merge_environment_settings
+requests.sessions.Session.send
+
+### requests.sessions.Session.prepare_request
+
+```diff
+470   0 :          if not isinstance(cookies, cookielib.CookieJar):
+-471     :              cookies = cookiejar_from_dict(cookies)
+472     :  
+473     :          # Merge with session cookies
+474     :          merged_cookies = merge_cookies(
+475     :              merge_cookies(RequestsCookieJar(), self.cookies), cookies
+476     :          )
+477     :  
+478     :          # Set environment's basic authentication if not explicitly set.
+479     :          auth = request.auth
+480     :          if self.trust_env and not auth and not self.auth:
+-481     :              auth = get_netrc_auth(request.url)
+482     :  
+483     :          p = PreparedRequest()
+484     :          p.prepare(
+485     :              method=request.method.upper(),
+486     :              url=request.url,
+487     :              files=request.files,
+488     :              data=request.data,
+489     :              json=request.json,
+490     :              headers=merge_setting(
+491     :                  request.headers, self.headers, dict_class=CaseInsensitiveDict
+492     :              ),
+493     :              params=merge_setting(request.params, self.params),
+494     :              auth=merge_setting(auth, self.auth),
+495     :              cookies=merged_cookies,
+496     :              hooks=merge_hooks(request.hooks, self.hooks),
+497     :          )
+-498     :          return p
+```
+Комментарий: 
+
+### requests.sessions.Session.merge_environment_settings
+Комментарий: функция полностью не покрывается. Она собирает настройки окружения (переменные среды, глобальные настройки requests, переданные аргументы) и объединяет их в единый словарь, затем эти настройки используются при отправке запроса.
+
+### requests.sessions.Session.send
+Комментарий: функция полностью не покрывается. Используется для отправки подготовленных запросов. 
+
+### Файл requests/models.py
+
+### requests.models.Request
+
+```diff
+-280    :              self.register_hook(event=k, hook=v)
+281     :  
+282     :          self.method = method
+283     :          self.url = url
+284     :          self.headers = headers
+285     :          self.files = files
+286     :          self.data = data
+287     :          self.json = json
+288     :          self.params = params
+289     :          self.auth = auth
+290     :          self.cookies = cookies
+291     :  
+292     :      def __repr__(self):
+-293     :          return f"<Request [{self.method}]>"
+```
+Комментарий: в стр. 280 код выполняет регистрацию пользовательских хуков (hooks) в объекте запроса. Пользовательские хуки не используются в функционале основного ПО, в котором используется модуль requests.
+В стр. 293 метод __repr__ определяет текстовое представление объекта и используется в Python для отладки и логирования, которые не используются в функционале основного ПО, в котором используется модуль requests. 
+
+### Файл requests/auth.py      
+
+### requests.auth.HTTPBasicAuth
+
+```diff
+76      :  class HTTPBasicAuth(AuthBase):
+77      :      """Attaches HTTP Basic Authentication to the given Request object."""
+78      :  
+79      :      def __init__(self, username, password):
+80      :          self.username = username
+81      :          self.password = password
+82      :  
+83      :      def __eq__(self, other):
+-84      :          return all(
+85      :              [
+86      :                  self.username == getattr(other, "username", None),
+87      :                  self.password == getattr(other, "password", None),
+88      :              ]
+89      :          )
+90      :  
+91      :      def __ne__(self, other):
+-92      :          return not self == other
+93      :  
+94      :      def __call__(self, r):
+95      :          r.headers["Authorization"] = _basic_auth_str(self.username, self.password)
+96      :          return r
+```
+Комментарий: метод __eq__ отвечает за проверку равенства двух объектов. В данном случае метод определяет, равны ли два объекта, сравнивая атрибуты username и password. Метод __eq__ не покрывается фаззингом, потому что не проверяются сценарии, где вызывается оператор == между двумя объектами. Поскольку метод реализует простое сравнение двух строк, фаззинг здесь не требуется.
+Метод __ne__ отвечает за проверку неравенства объектов (вызывается, когда используется оператор !=). Метод __ne__ не покрывается фаззингом из-за отсутствия проверок с использованием оператора !=. Поскольку метод реализует простое сравнение двух строк, фаззинг здесь не требуется.
+
+### requests.auth._basic_auth_str
+
+```diff
+25    0 :  def _basic_auth_str(username, password):
+26      :      """Returns a Basic Auth string."""
+27      :  
+28      :      # "I want us to put a big-ol' comment on top of it that
+29      :      # says that this behaviour is dumb but we need to preserve
+30      :      # it because people are relying on it."
+31      :      #    - Lukasa
+32      :      #
+33      :      # These are here solely to maintain backwards compatibility
+34      :      # for things like ints. This will be removed in 3.0.0.
+35      :      if not isinstance(username, basestring):
+-36      :          warnings.warn(
+37      :              "Non-string usernames will no longer be supported in Requests "
+38      :              "3.0.0. Please convert the object you've passed in ({!r}) to "
+39      :              "a string or bytes object in the near future to avoid "
+40      :              "problems.".format(username),
+41      :              category=DeprecationWarning,
+42      :          )
+-43      :          username = str(username)
+44      :  
+45      :      if not isinstance(password, basestring):
+-46      :          warnings.warn(
+47      :              "Non-string passwords will no longer be supported in Requests "
+48      :              "3.0.0. Please convert the object you've passed in ({!r}) to "
+49      :              "a string or bytes object in the near future to avoid "
+50      :              "problems.".format(type(password)),
+51      :              category=DeprecationWarning,
+52      :          )
+-53      :          password = str(password)
+54      :      # -- End Removal --
+55      :  
+56      :      if isinstance(username, str):
+```
+Комментарий: в данном случае код не покрывается в стр. 36, 43, 46, 53, так как warnings.warn() в этом коде используется для обработки некорректных данных для username и password, которые и так генерируются фаззером. 
