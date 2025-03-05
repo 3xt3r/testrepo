@@ -134,10 +134,10 @@
 
 Целевой метод requests.api.request является оберткой над функцией requests.sessions.Session.request, которая покрывается вся. 
 Далее функция requests.sessions.Session.request вызывает следующие функции, которые потенциально попадают на поверхность атаки:
-requests.models.Request
-requests.sessions.Session.prepare_request
-requests.sessions.Session.merge_environment_settings
-requests.sessions.Session.send
+ - requests.models.Request
+ - requests.sessions.Session.prepare_request
+ - requests.sessions.Session.merge_environment_settings
+ - requests.sessions.Session.send
 
 ### requests.sessions.Session.prepare_request
 
@@ -170,15 +170,79 @@ requests.sessions.Session.send
 495     :              cookies=merged_cookies,
 496     :              hooks=merge_hooks(request.hooks, self.hooks),
 497     :          )
--498     :          return p
+498     :          return p
 ```
-Комментарий: 
+Комментарий: не покрывается строка 471, 
+Также не покрывается строка 481, относящаяся к логике аутентификации. Функция пытается получить логин и пароль из файла .netrc. Если для request.url найдена запись, возвращается (username, password). Если файл .netrc отсутствует или нет записи для url, возвращает None. 
+В функционале основного ПО, в котором используется модуль requests, отсутствует обращение к модулю аутентификации, следовательно покрытие данного кода на текущий момент не требуется. 
+
 
 ### requests.sessions.Session.merge_environment_settings
-Комментарий: функция полностью не покрывается. Она собирает настройки окружения (переменные среды, глобальные настройки requests, переданные аргументы) и объединяет их в единый словарь, затем эти настройки используются при отправке запроса.
+
+```diff
+757     :          if self.trust_env:
+758     :              # Set environment's proxies.
+759     :              no_proxy = proxies.get("no_proxy") if proxies is not None else None
+760     :              env_proxies = get_environ_proxies(url, no_proxy=no_proxy)
+761     :              for k, v in env_proxies.items():
+-762     :                  proxies.setdefault(k, v)
+763     :  
+```
+Комментарий: в функции merge_environment_settings не покрывается строка 762, которая участвует в установке прокси-серверов на основе настроек системы. Это часть прокси-режима в requests, который позволяет автоматически применять системные прокси или прокси, указанные пользователем. В функционале основного ПО, в котором используется модуль requests, данная настройка не участвует. 
 
 ### requests.sessions.Session.send
-Комментарий: функция полностью не покрывается. Используется для отправки подготовленных запросов. 
+
+```diff
+688     :          if isinstance(request, Request):
+-689     :              raise ValueError("You can only send PreparedRequests.")
+690     :  
+691     :          # Set up variables needed for resolve_redirects and dispatching of hooks
+692     :          allow_redirects = kwargs.pop("allow_redirects", True)
+693     :          stream = kwargs.get("stream")
+694     :          hooks = request.hooks
+695     :  
+696     :          # Get the appropriate adapter to use
+697     :          adapter = self.get_adapter(url=request.url)
+698     :  
+699     :          # Start time (approximately) of the request
+700     :          start = preferred_clock()
+701     :  
+702     :          # Send the request
+703     :          r = adapter.send(request, **kwargs)
+704     :  
+705     :          # Total elapsed time of the request (approximately)
+706     :          elapsed = preferred_clock() - start
+707     :          r.elapsed = timedelta(seconds=elapsed)
+708     :  
+709     :          # Response manipulation hooks
+710     :          r = dispatch_hook("response", hooks, r, **kwargs)
+711     :  
+712     :          # Persist cookies
+713     :          if r.history:
+714     :              # If the hooks create history then we want those cookies too
+-715     :              for resp in r.history:
+-716     :                  extract_cookies_to_jar(self.cookies, resp.request, resp.raw)
+717     :  
+718     :          extract_cookies_to_jar(self.cookies, request, r.raw)
+719     :  
+720     :          # Resolve redirects if allowed.
+721     :          if allow_redirects:
+722     :              # Redirect resolving generator.
+723     :              gen = self.resolve_redirects(r, request, **kwargs)
+724     :              history = [resp for resp in gen]
+725     :          else:
+726     :              history = []
+727     :  
+728     :          # Shuffle things around if there's history.
+729     :          if history:
+730     :              # Insert the first (original) request at the start
+-731     :              history.insert(0, r)
+732     :              # Get the last request made
+-733     :              r = history.pop()
+-734     :              r.history = history
+```
+Комментарий: код на стр. 689 является обработкой исключения ValueError, не требуется фаззить. Код на стр. 715-716 относится к обработке редиректов, механизм перенаправления не используется в функционале основного ПО, в котором используется модуль requests.
+Код на стр. 731-734 также относится к обработке редиректов. 
 
 ### Файл requests/models.py
 
