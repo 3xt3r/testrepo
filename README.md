@@ -16,9 +16,8 @@
 
 ### Файл requests/api.py
 
-Непокрытый код: стр. 73
 ```diff
-62    0 :  def get(url, params=None, **kwargs):
+62      :  def get(url, params=None, **kwargs):
 63      :      r"""Sends a GET request.
 64      :  
 65      :      :param url: URL for the new :class:`Request` object.
@@ -32,9 +31,8 @@
 -73      :      return request("get", url, params=params, **kwargs)
 ```
 
-Непокрытый код: стр. 85
 ```diff
-76    0 :  def options(url, **kwargs):
+76      :  def options(url, **kwargs):
 77      :      r"""Sends an OPTIONS request.
 78      :  
 79      :      :param url: URL for the new :class:`Request` object.
@@ -46,9 +44,8 @@
 -85      :      return request("options", url, **kwargs)
 ```
 
-Непокрытый код: стр. 99-100
 ```diff
-88    0 :  def head(url, **kwargs):
+88      :  def head(url, **kwargs):
 89      :      r"""Sends a HEAD request.
 90      :  
 91      :      :param url: URL for the new :class:`Request` object.
@@ -63,9 +60,8 @@
 -100     :      return request("head", url, **kwargs)
 ```
 
-Непокрытый код: стр. 115
 ```diff
-103   0 :  def post(url, data=None, json=None, **kwargs):
+103     :  def post(url, data=None, json=None, **kwargs):
 104     :      r"""Sends a POST request.
 105     :  
 106     :      :param url: URL for the new :class:`Request` object.
@@ -80,9 +76,8 @@
 -115     :      return request("post", url, data=data, json=json, **kwargs)
 ```
 
-Непокрытый код: стр. 130
 ```diff
-118   0 :  def put(url, data=None, **kwargs):
+118     :  def put(url, data=None, **kwargs):
 119     :      r"""Sends a PUT request.
 120     :  
 121     :      :param url: URL for the new :class:`Request` object.
@@ -97,9 +92,8 @@
 -130     :      return request("put", url, data=data, **kwargs)
 ```
 
-Непокрытый код: стр. 145
 ```diff
-133   0 :  def patch(url, data=None, **kwargs):
+133     :  def patch(url, data=None, **kwargs):
 134     :      r"""Sends a PATCH request.
 135     :  
 136     :      :param url: URL for the new :class:`Request` object.
@@ -114,9 +108,8 @@
 -145     :      return request("patch", url, data=data, **kwargs)
 ```
 
-Непокрытый код: стр. 157
 ```diff
-148   0 :  def delete(url, **kwargs):
+148     :  def delete(url, **kwargs):
 149     :      r"""Sends a DELETE request.
 150     :  
 151     :      :param url: URL for the new :class:`Request` object.
@@ -142,7 +135,7 @@
 ### requests.sessions.Session.prepare_request
 
 ```diff
-470   0 :          if not isinstance(cookies, cookielib.CookieJar):
+470     :          if not isinstance(cookies, cookielib.CookieJar):
 -471     :              cookies = cookiejar_from_dict(cookies)
 472     :  
 473     :          # Merge with session cookies
@@ -300,7 +293,7 @@
 ### requests.auth._basic_auth_str
 
 ```diff
-25    0 :  def _basic_auth_str(username, password):
+25      :  def _basic_auth_str(username, password):
 26      :      """Returns a Basic Auth string."""
 27      :  
 28      :      # "I want us to put a big-ol' comment on top of it that
